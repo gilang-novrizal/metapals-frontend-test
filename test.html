@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metapals Interview | Catch a Mole</title>
+  </head>
+  <style>
+    .hole_container {
+      width: 300px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .hole {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 5px solid gray;
+      background-color: black;
+      cursor: pointer;
+      display: block;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game_text {
+      display: none;
+    }
+    .mole {
+      width: 64px;
+      height: 64px;
+    }
+    .mole_container {
+      display: none;
+    }
+    .up .mole_container {
+      display: block;
+    }
+  </style>
+  <body>
+    <h2>Metapals Catch a Mole!</h2>
+    <div class="hole_container">
+      <div class="hole hole1">
+        <div class="mole_container">
+          <img
+            class="mole"
+            src="https://metapals.github.io/frontend-interview-test-lite/assets/mole.60ea17ce.png"
+          />
+        </div>
+      </div>
+      <div class="hole hole2">
+        <div class="mole_container">
+          <img
+            class="mole"
+            src="https://metapals.github.io/frontend-interview-test-lite/assets/mole.60ea17ce.png"
+          />
+        </div>
+      </div>
+      <div class="hole hole3">
+        <div class="mole_container">
+          <img
+            class="mole"
+            src="https://metapals.github.io/frontend-interview-test-lite/assets/mole.60ea17ce.png"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="game_text">
+      <p class="win"></p>
+      <p>Clicks: <span class="clicks"></span></p>
+      <p>Elapsed time: <span class="time"></span></p>
+    </div>
+    <button class="start_button" onclick="startGame()">Start</button>
+    <script>
+      let clicks = 0;
+      let elapsedTime = 0;
+      let lastHole;
+      let playerWin = false;
+      const holes = document.querySelectorAll(".hole");
+      const moles = document.querySelectorAll(".mole_container");
+
+      function randomTime(min, max) {
+        return Math.round(Math.random() * (max - min) + min);
+      }
+
+      function randomHole(holes) {
+        const idx = Math.floor(Math.random() * holes.length);
+        const hole = holes[idx];
+        if (hole === lastHole) {
+          randomHole(holes);
+        }
+        lastHole = hole;
+        return hole;
+      }
+
+      function showMole() {
+        const time = randomTime(200, 400);
+        const hole = randomHole(holes);
+        hole.classList.add("up");
+        setTimeout(() => {
+          hole.classList.remove("up");
+          showMole();
+        }, time);
+      }
+
+      function startGame() {
+        clicks = 0;
+        let clicksText = document.querySelector(".clicks");
+        clicksText.textContent = clicks;
+
+        let text = document.querySelector(".game_text");
+        text.style.display = "block";
+
+        setInterval(() => {
+          elapsedTime++;
+          let timeText = document.querySelector(".time");
+          timeText.textContent = elapsedTime;
+        }, 1000);
+
+        document.querySelector(".start_button").disabled = true;
+        timeUp = false;
+        showMole();
+      }
+
+      function clickHole() {
+        clicks++;
+        let clicksText = document.querySelector(".clicks");
+        clicksText.textContent = clicks;
+      }
+
+      function bonk(e) {
+        if (!e.isTrusted) return;
+        playerWin = true;
+        this.parentNode.classList.remove("up");
+        const winText = document.querySelector(".win");
+        winText.textContent = "You Win!";
+      }
+
+      moles.forEach((mole) => mole.addEventListener("click", bonk));
+      holes.forEach((hole) => hole.addEventListener("click", clickHole));
+    </script>
+  </body>
+</html>
