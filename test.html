@@ -132,6 +132,7 @@
       function bonk(e) {
         if (!e.isTrusted) return;
         playerWin = true;
+
         this.parentNode.classList.remove("up");
         const winText = document.querySelector(".win");
         winText.textContent = "You Win!";
